@@ -305,6 +305,8 @@ fork(void)
 
   pid = np->pid;
 
+   np->tracemask=p->tracemask;//子进程继承父进程的tracemask
+
   release(&np->lock);
 
   acquire(&wait_lock);
@@ -653,4 +655,23 @@ procdump(void)
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
   }
+}
+
+void trace(int mask)
+{
+  myproc()->tracemask=mask;
+}
+
+uint64 get_nproc()
+{
+    struct proc *p;
+    uint64 cnt = 0;
+    for (p = proc; p < &proc[NPROC]; p++)
+    {
+        if (p->state != UNUSED)
+        {
+            cnt++;
+        }
+    }
+    return cnt;
 }
