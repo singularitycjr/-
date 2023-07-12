@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "cstdlib": "c",
+        "stat.h": "c",
+        "typeinfo": "c"
+    }
+}

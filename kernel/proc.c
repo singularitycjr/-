@@ -281,6 +281,8 @@ fork(void)
     return -1;
   }
 
+ 
+
   // Copy user memory from parent to child.
   if(uvmcopy(p->pagetable, np->pagetable, p->sz) < 0){
     freeproc(np);
@@ -291,6 +293,8 @@ fork(void)
 
   // copy saved user registers.
   *(np->trapframe) = *(p->trapframe);
+
+
 
   // Cause fork to return 0 in the child.
   np->trapframe->a0 = 0;
@@ -304,6 +308,8 @@ fork(void)
   safestrcpy(np->name, p->name, sizeof(p->name));
 
   pid = np->pid;
+
+  np->tracemask=p->tracemask;//子进程继承父进程的tracemask
 
   release(&np->lock);
 
@@ -653,4 +659,19 @@ procdump(void)
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
   }
+}
+
+uint64
+get_nproc(void)
+{
+  uint64 nproc = 0;
+  struct proc *p;
+  /* use spinlock to avoid race(accessing 'nproc') between different threads */
+  for(p = &proc[0]; p < &proc[NPROC]; p++){
+    acquire(&p->lock);
+    if(p->state != UNUSED)
+      nproc++;
+    release(&p->lock);
+  }
+  return nproc;
 }
