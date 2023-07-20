@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
   // atoi sys call guarantees return an integer
   int ticks = atoi(argv[1]);
   //printf("%d",ticks);
-  if (ticks==0)
+  if (ticks<=0)
   {
     printf("parameter 'time' must be 'int' type,and must be positive\n");
   }

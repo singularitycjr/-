@@ -6,7 +6,6 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
-#include "sysinfo.h"
 
 uint64
 sys_exit(void)
@@ -98,34 +97,5 @@ sys_uptime(void)
 }
 
 
-uint64 sys_trace(void)
-{
-    int mask;
-    if (argint(0, &mask) < 0)
-    {
-        return -1;
-    }
-    myproc()->tracemask =mask;
-    return 0;
-}
 
-uint64
-sys_sysinfo(void)
-{
-  struct proc *p = myproc();
-  struct sysinfo info;
-  uint64 addr;
 
-  /* get VA(virtual address)*/
-  if(argaddr(0, &addr) < 0)
-    return -1;
-  
-  /* get info*/
-  info.freemem = get_amount_freemem();
-  info.nproc = get_nproc();
-
-  /* Copy len bytes from src(info) to virtual address dstva(addr) in a given page table. */
-  if(copyout(p->pagetable, addr, (char *)&info, sizeof(info)) < 0)
-    return -1;
-  return 0;
-}

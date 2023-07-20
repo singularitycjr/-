@@ -10,14 +10,14 @@
 
 int main(int argc, char *argv[]) {
 
-    int arg_num=0;
+    int arg_num=0;//用于向待执行的xargs后面的命令的参数数组赋值
     char* args[MAXARG];//存储xargs之后的参数，指针数组
     char front_args_buf[MAXARG]={'\0'};//存储xargs之前输出结果（以作为xargs之后续上的参数）
+    //p_buf指向本次while循环一开始的空位置，在当此循环中不变
     char* p_buf=front_args_buf;//指向本轮迭代front_args_buf空位置的指针
-    char* p_arr=front_args_buf;
-
-    int length=0;
-    int buf_used_size=0;
+    char* p_arr=front_args_buf;//p_arr始终指向一个空位置
+    int length=0;//本次从左侧管道读参长度
+    int buf_used_size=0;//buf已经使用的长度
 
     for (; arg_num+1 < argc; arg_num++) {
         args[arg_num ] = argv[arg_num+1];
@@ -26,6 +26,7 @@ int main(int argc, char *argv[]) {
 
     while((length=read(0,p_buf,MAXARG))>0)
     {
+        //printf("%s",front_args_buf);
         buf_used_size+=length;
         if(buf_used_size>MAXARG)
         {
@@ -71,6 +72,7 @@ int main(int argc, char *argv[]) {
     }
     exit(0);
 }
+/*echo 1\2 | xargs echo line*/
 /*
 #include "kernel/types.h"
 #include "kernel/param.h"

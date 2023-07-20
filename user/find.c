@@ -59,7 +59,7 @@ void find(char* current_path,char* target)
                 if(de.inum == 0)
                     continue;
                 memmove(p, de.name, DIRSIZ);
-                p[DIRSIZ] = '\0';//在buf末尾添加结束符
+                p[DIRSIZ+1] = '\0';//在buf末尾添加结束符
                 //不许递归到当前目录或父目录
                 if(strcmp(de.name,".")==0||strcmp(de.name,"..")==0)
                 {
