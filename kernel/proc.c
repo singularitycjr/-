@@ -117,6 +117,19 @@ allocproc(void)
   return 0;
 
 found:
+//新增
+  p->passticks = 0;
+  p->ticks = 0;
+  p->handler = 0;
+  p->handler_execute = 0;
+
+  // Allocate a timer_trapframe page.
+  if((p->timer_trapframe = (struct trapframe *)kalloc()) == 0){
+    freeproc(p);
+    release(&p->lock);
+    return 0;
+  }
+
   p->pid = allocpid();
   p->state = USED;
 
@@ -155,6 +168,15 @@ freeproc(struct proc *p)
   p->trapframe = 0;
   if(p->pagetable)
     proc_freepagetable(p->pagetable, p->sz);
+
+p->passticks = 0;
+p->ticks = 0;
+p->handler = 0;
+if(p->timer_trapframe)
+  kfree((void*)p->timer_trapframe);
+p->timer_trapframe = 0;
+p->handler_execute = 0; 
+
   p->pagetable = 0;
   p->sz = 0;
   p->pid = 0;

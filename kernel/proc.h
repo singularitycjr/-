@@ -105,4 +105,13 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  
+      // these are private to the process, so p->lock need not be held.
+  int ticks;                   //ticks of alarm
+  void (*handler)();           //handler function
+  int passticks;               //ticks from the last handler to the current handler
+  struct trapframe *timer_trapframe; // saves registers to resume in sigret 
+  int handler_execute;         // handler executing  => 1, handler no executing => 0
+
+
 };
