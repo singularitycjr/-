@@ -87,8 +87,9 @@ thread_schedule(void)
      * Invoke thread_switch to switch from t to next_thread:
      * thread_switch(??, ??);
      */
+     thread_switch((uint64)&t->thread_context, (uint64)&next_thread->thread_context);
     //thread_switch((uint64) t, (uint64) current_thread);//这句是参考https://zhuanlan.zhihu.com/p/629202642的，但是不对，为什么？
-    thread_switch((uint64)&t->thread_context, (uint64)&next_thread->thread_context);
+   
   } else
     next_thread = 0;
 }
