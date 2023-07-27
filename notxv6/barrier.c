@@ -30,27 +30,24 @@ barrier()
   // Block until all threads have called barrier() and
   // then increment bstate.round.
   //
-   pthread_mutex_lock(&bstate.barrier_mutex);  // acquire lock
+   pthread_mutex_lock(&bstate.barrier_mutex);  // 获取锁
 
-  /* next thread */
+  /*计数*/
   bstate.nthread++;
   
-  /* next round */
-  /* the last thread coming, we go to next round and wake up all threads */
-  /* we must set 'bstate.nthread = 0' to call barrier() for all threads again */
+ /*如果到达指定最大计数，则将计数置0，开始下一轮计数，
+ /*同时将之前所有阻塞在barrier_cond信号量上的线程唤醒*/
   if (bstate.nthread == nthread){
     bstate.nthread = 0;
     bstate.round++;
-    pthread_cond_broadcast(&bstate.barrier_cond); // wake up every thread sleeping on cond
+    pthread_cond_broadcast(&bstate.barrier_cond); 
   }
-
-  /* block all thread by pthread_cond_broadcast()*/
   else{
-     // when we not use 'else', 'pthread_cond_wait()' will be executed after 'pthread_cond_broadcast()'
-    pthread_cond_wait(&bstate.barrier_cond, &bstate.barrier_mutex);  // go to sleep on cond, releasing lock mutex, acquiring upon wake up
+    /*如果没有达到指定最大计数，则阻塞在barrier_cond信号量上*/
+    pthread_cond_wait(&bstate.barrier_cond, &bstate.barrier_mutex); 
   }  
 
-  pthread_mutex_unlock(&bstate.barrier_mutex);  // release lock
+  pthread_mutex_unlock(&bstate.barrier_mutex);  // 释放锁
 }
 
 static void *
