@@ -514,7 +514,8 @@ sys_pipe(void)
   return 0;
 }
 
-int sys_symlink(char *target, char *path) {
+uint64
+sys_symlink(void) {
   char kpath[MAXPATH], ktarget[MAXPATH];
   memset(kpath, 0, MAXPATH);
   memset(ktarget, 0, MAXPATH);
@@ -523,7 +524,6 @@ int sys_symlink(char *target, char *path) {
 
   if((n = argstr(0, ktarget, MAXPATH)) < 0)
     return -1;
-
   if ((n = argstr(1, kpath, MAXPATH)) < 0)
     return -1;
 
